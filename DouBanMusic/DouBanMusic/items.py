@@ -28,3 +28,30 @@ class ProxyItem(scrapy.Item):
     ip = scrapy.Field()
     port = scrapy.Field()
     type = scrapy.Field()
+
+
+class UserMusicCollectItem(scrapy.Item):
+    userid = scrapy.Field()
+    itemid = scrapy.Field()
+    rating = scrapy.Field()
+    date = scrapy.Field()
+
+
+class UserMusicWishItem(scrapy.Item):
+    userid = scrapy.Field()
+    itemid = scrapy.Field()
+    rating = scrapy.Field()
+    date = scrapy.Field()
+
+
+class UserMusicDoItem(scrapy.Item):
+    userid = scrapy.Field()
+    itemid = scrapy.Field()
+    rating = scrapy.Field()
+    date = scrapy.Field()
+
+
+class MusicInfoItem(scrapy.Item):
+    itemid = scrapy.Field()
+    name = scrapy.Field()
+    content = scrapy.Field()

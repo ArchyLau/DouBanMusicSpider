@@ -22,7 +22,7 @@ NEWSPIDER_MODULE = 'DouBanMusic.spiders'
 ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-CONCURRENT_REQUESTS = 16
+CONCURRENT_REQUESTS = 32
 
 # Configure a delay for requests for the same website (default: 0)
 # See https://doc.scrapy.org/en/latest/topics/settings.html#download-delay
@@ -55,13 +55,15 @@ DOWNLOAD_DELAY = 0
 DOWNLOADER_MIDDLEWARES = {
     # 'DouBanMusic.middlewares.DoubanmusicDownloaderMiddleware': 543,
     # 'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware':100,
-    'DouBanMusic.middlewares.MyUserAgentMiddleware': 300,
-    # 'DouBanMusic.middlewares.ProxyMiddleware': 200
-    # 'DouBanMusic.middlewares.AbuyunProxyMiddleware': 200
+    'DouBanMusic.middlewares.MyUserAgentMiddleware': 100,
+    # 'DouBanMusic.middlewares.ProxyMiddleware': 200,
+    # 'DouBanMusic.middlewares.AbuyunProxyMiddleware': 200,
     # 'DouBanMusic.middlewares.PadailiProxyMiddleware': 200,
-    # 'scrapy.downloadermiddlewares.redirect.RedirectMiddleware': None,
-    # 'scrapy.downloadermiddlewares.redirect.MetaRefreshMiddleware': None,
+    'scrapy.downloadermiddlewares.redirect.RedirectMiddleware': None,
+    'scrapy.downloadermiddlewares.redirect.MetaRefreshMiddleware': None,
 }
+
+RETRY_HTTP_CODES=[500,502,503,504,522,524,408,302,403]
 
 # Enable or disable extensions
 # See https://doc.scrapy.org/en/latest/topics/extensions.html
@@ -144,8 +146,8 @@ USER_AGENTS_LIST = [
 ]
 
 ###
-RETRY_TIMES = 5
-DOWNLOAD_TIMEOUT = 10
+RETRY_TIMES = 3
+DOWNLOAD_TIMEOUT = 5
 
 ### AbuYun
 PROXYHOST = 'http-dyn.abuyun.com'

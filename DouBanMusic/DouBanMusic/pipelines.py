@@ -8,6 +8,10 @@ import pymysql
 import requests
 from .items import DoubanUserItem
 from .items import ProxyItem
+from .items import UserMusicCollectItem
+from .items import UserMusicWishItem
+from .items import UserMusicDoItem
+from .items import MusicInfoItem
 from scrapy.exceptions import DropItem
 
 
@@ -49,7 +53,6 @@ class MysqlPipeline(object):
         )
         self.cursor = self.connect.cursor()
 
-
     def close_spider(self, spider):
         self.connect.close()
 
@@ -81,8 +84,27 @@ class MysqlPipeline(object):
                 self.cursor.execute(sql, (item['ip'], item['port'], item['type']))
                 self.connect.commit()
                 return item
-        else:
-            pass
+        elif isinstance(item, UserMusicCollectItem):
+            sql = 'insert ignore into UserMusicCollect(userid,itemid,rating,date) values (%s,%s,%s,%s)'
+            self.cursor.execute(sql, (item['userid'], item['itemid'], item['rating'], item['date']))
+            self.connect.commit()
+            return item
+        elif isinstance(item, UserMusicDoItem):
+            sql = 'insert ignore into UserMusicDO(userid,itemid,rating,date) values (%s,%s,%s,%s)'
+            self.cursor.execute(sql, (item['userid'], item['itemid'], item['rating'], item['date']))
+            self.connect.commit()
+            return item
+        elif isinstance(item, UserMusicWishItem):
+            sql = 'insert ignore into UserMusicWish(userid,itemid,rating,date) values (%s,%s,%s,%s)'
+            self.cursor.execute(sql, (item['userid'], item['itemid'], item['rating'], item['date']))
+            self.connect.commit()
+            return item
+        elif isinstance(item, MusicInfoItem):
+            sql = 'insert ignore into MusicInfo(itemid,name,content) values (%s,%s,%s)'
+            self.cursor.execute(sql, (
+                item['itemid'], item['name'], item['content']))
+            self.connect.commit()
+            return item
 
     def get_all_users(self):
         sql = 'select userid from Users'
