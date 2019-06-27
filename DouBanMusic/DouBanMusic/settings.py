@@ -22,12 +22,12 @@ NEWSPIDER_MODULE = 'DouBanMusic.spiders'
 ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-CONCURRENT_REQUESTS = 32
+CONCURRENT_REQUESTS = 4
 
 # Configure a delay for requests for the same website (default: 0)
 # See https://doc.scrapy.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-DOWNLOAD_DELAY = 0
+DOWNLOAD_DELAY = random.randint(4,6)
 # The download delay setting will honor only one of:
 # CONCURRENT_REQUESTS_PER_DOMAIN = 16
 # CONCURRENT_REQUESTS_PER_IP = 16
@@ -57,13 +57,14 @@ DOWNLOADER_MIDDLEWARES = {
     # 'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware':100,
     'DouBanMusic.middlewares.MyUserAgentMiddleware': 100,
     # 'DouBanMusic.middlewares.ProxyMiddleware': 200,
-    # 'DouBanMusic.middlewares.AbuyunProxyMiddleware': 200,
+    'DouBanMusic.middlewares.LocalRetryMiddleware':550,
+    # 'DouBanMusic.middlewares.AbuyunProxyMiddleware': 612,
     # 'DouBanMusic.middlewares.PadailiProxyMiddleware': 200,
-    'scrapy.downloadermiddlewares.redirect.RedirectMiddleware': None,
-    'scrapy.downloadermiddlewares.redirect.MetaRefreshMiddleware': None,
+    # 'scrapy.downloadermiddlewares.redirect.RedirectMiddleware': None,
+    # 'scrapy.downloadermiddlewares.redirect.MetaRefreshMiddleware': None,
 }
 
-RETRY_HTTP_CODES=[500,502,503,504,522,524,408,302,403]
+RETRY_HTTP_CODES=[500,502,503,504,522,524,408,302,403,404]
 
 # Enable or disable extensions
 # See https://doc.scrapy.org/en/latest/topics/extensions.html
@@ -104,7 +105,7 @@ MYSQL_HOST = '127.0.0.1'
 MYSQL_PORT = 3306
 MYSQL_DB = 'DouBanMusic'
 MYSQL_USER = 'root'
-MYSQL_PASSWD = 'lyq963852'
+MYSQL_PASSWD = 'Lyq963852'
 MYSQL_CHARSET = 'utf8mb4'
 
 # User-agent list
@@ -146,14 +147,17 @@ USER_AGENTS_LIST = [
 ]
 
 ###
-RETRY_TIMES = 3
-DOWNLOAD_TIMEOUT = 5
+RETRY_TIMES = 5
+DOWNLOAD_TIMEOUT = 10
 
 ### AbuYun
 PROXYHOST = 'http-dyn.abuyun.com'
 PROXYPORT = '9020'
-PROXYUSER = 'H1136653P2610ZVD'
-PROXYPWD = '69D96C07D13FBBA5'
-
+PROXYUSER = 'H6RM9UZT9Y62462D'
+PROXYPWD = '050934487196D7A1'
+# PROXYHOST = 'http-pro.abuyun.com'
+# PROXYPORT = '9010'
+# PROXYUSER = 'H8JY2T5X0X40EMBP'
+# PROXYPWD = '325DC729AB495B84'
 ### padaili
-PADAILIAPI = 'http://www.padaili.com/proxyapi.php?apikey=b24d1c5c457639d59931eb0eff5a99ee&num=1000&type=1,2&order=default'
+# PADAILIAPI = 'http://www.padaili.com/proxyapi.php?apikey=b24d1c5c457639d59931eb0eff5a99ee&num=1000&type=1,2&order=default'

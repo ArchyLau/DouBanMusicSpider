@@ -23,14 +23,14 @@ class UsermusiclistSpider(scrapy.Spider):
     def start_requests(self):
         # 只是为了启动spider 以从pipeline中获取Users, url可随意设置
         return [Request(
-            url='https://accounts.douban.com/passport/login',
+            url='https://douban.com',
             callback=self.get_users
         )]
 
     def get_users(self, response):
         userlist = self.myPipeline.get_all_users()
         self.userlist = [i[0] for i in userlist]
-        self.current_user = 1722
+        self.current_user = 6151
         return [
             Request(
                 url='https://music.douban.com/people/' + str(
