@@ -12,6 +12,8 @@ from .items import UserMusicCollectItem
 from .items import UserMusicWishItem
 from .items import UserMusicDoItem
 from .items import MusicInfoItem
+from .items import SongInfoItem
+from .items import UpdateMusicInfoItem
 from scrapy.exceptions import DropItem
 
 
@@ -105,6 +107,20 @@ class MysqlPipeline(object):
                 item['itemid'], item['name'], item['content']))
             self.connect.commit()
             return item
+        elif isinstance(item, SongInfoItem):
+            sql = 'insert ignore into SongInfo(songname,itemid) values (%s,%s)'
+            self.cursor.execute(sql, (item['songname'], item['itemid']))
+            self.connect.commit()
+        elif isinstance(item, UpdateMusicInfoItem):
+            # if item['style'] == None:
+            #     item['style'] = 'NULL'
+            # if item['player'] == None:
+            #     item['player'] = 'NULL'
+            # sql = "Update MusicInfo Set style='" + item['style'] + "',player='" + item['player'] + "' where itemid='" + \
+            #       str(item['itemid']) + "'"
+            sql = 'update MusicInfo Set style=%s,player=%s where itemid=%s'
+            self.cursor.execute(sql, (item['style'] or None, item['player'] or None, item['itemid']))
+            self.connect.commit()
 
     def get_all_users(self):
         sql = 'select userid from Users'
@@ -112,4 +128,9 @@ class MysqlPipeline(object):
         results = self.cursor.fetchall()
         return results
 
+    def get_all_musics(self):
+        sql = 'select itemid from MusicInfo'
+        self.cursor.execute(sql)
+        results = self.cursor.fetchall()
+        return results
     # def test_proxy(self,):

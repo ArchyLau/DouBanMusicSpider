@@ -55,3 +55,14 @@ class MusicInfoItem(scrapy.Item):
     itemid = scrapy.Field()
     name = scrapy.Field()
     content = scrapy.Field()
+
+
+class SongInfoItem(scrapy.Item):
+    songname = scrapy.Field()
+    itemid = scrapy.Field()
+
+
+class UpdateMusicInfoItem(scrapy.Item):
+    style = scrapy.Field()
+    player = scrapy.Field()
+    itemid = scrapy.Field()

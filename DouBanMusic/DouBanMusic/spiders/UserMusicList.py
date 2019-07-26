@@ -8,7 +8,6 @@ from ..items import MusicInfoItem
 
 
 class UsermusiclistSpider(scrapy.Spider):
-    # 先check一遍三列表全空的用户
     # 查看广播和个人主页需要模拟登陆，其他不需要
     name = 'UserMusicList'
     allowed_domains = ['douban.com']
@@ -22,15 +21,39 @@ class UsermusiclistSpider(scrapy.Spider):
     # start_urls = ['http://douban/']
     def start_requests(self):
         # 只是为了启动spider 以从pipeline中获取Users, url可随意设置
-        return [Request(
-            url='https://douban.com',
-            callback=self.get_users
+        # 加入登录操作，提高反爬
+        login_data = {
+            'ck': '',
+            'name': '18717882007',
+            'password': 'lyq963852',
+            'remember': 'True',
+            'ticket': ''
+        }
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36'}
+        headers['X-Requested-With'] = 'XMLHttpRequest'
+        return [scrapy.FormRequest(
+            # url='https://accounts.douban.com/passport/login',
+            url='https://accounts.douban.com/j/mobile/login/basic',
+            formdata=login_data,
+            headers=headers,
+            callback=self.login
         )]
 
+    def login(self, response):
+        url = 'http://www.douban.com/'
+        yield scrapy.Request(url, callback=self.get_users)
+
     def get_users(self, response):
+        # print(response.text)
+        account = response.xpath('//a[@class="bn-more"]/span/text()').extract_first()
+        if account is None:
+            print("登录失败")
+        else:
+            print(u"登录成功,当前账户为 %s" % account)
         userlist = self.myPipeline.get_all_users()
         self.userlist = [i[0] for i in userlist]
-        self.current_user = 6151
+        self.current_user = 7062
         return [
             Request(
                 url='https://music.douban.com/people/' + str(

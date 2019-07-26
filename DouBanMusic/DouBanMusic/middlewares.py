@@ -15,6 +15,8 @@ import pymysql
 import requests
 import base64
 import time
+from twisted.internet.error import TimeoutError
+from .spiders.SongList import SonglistSpider
 
 
 class DoubanmusicSpiderMiddleware(object):
@@ -129,7 +131,8 @@ class MyUserAgentMiddleware(UserAgentMiddleware):
 
     def process_request(self, request, spider):
         agent = random.choice(self.user_agent)
-        request.headers['User-Agent'] = agent
+        request.headers[
+            'User-Agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36'
 
 
 class MySqlProxyMiddleware(object):
@@ -284,18 +287,26 @@ class PadailiProxyMiddleware(object):
         self.proxyPool = list(proxypool)
         spider.logger.info('ProxyPool has prepared. Total num is %d' % len(self.proxyPool))
 
+
 class LocalRetryMiddleware(RetryMiddleware):
     def process_response(self, request, response, spider):
-        if request.meta.get('dont_retry',False):
+        if request.meta.get('dont_retry', False):
             return response
         if response.status in self.retry_http_codes:
-            reason=response_status_message(response.status)
+            reason = response_status_message(response.status)
+            if response.status == 404 and isinstance(spider, SonglistSpider):
+                spider.current_music += 1
+                next_request = request.replace(url='https://music.douban.com/subject/' + str(
+                    spider.musiclist[spider.current_music]) + '/', )
+                return self._retry(next_request, reason, spider) or response
             time.sleep(10)
-            return self._retry(request,reason,spider) or response
+            return self._retry(request, reason, spider) or response
         return response
 
     def process_exception(self, request, exception, spider):
-        if isinstance(exception,self.EXCEPTIONS_TO_RETRY)\
-            and not request.meta.get('dont_retry',False):
+        if isinstance(exception, self.EXCEPTIONS_TO_RETRY) \
+                and not request.meta.get('dont_retry', False):
             time.sleep(10)
-            return self._retry(request,exception,spider)
+            return self._retry(request, exception, spider)
+        elif isinstance(exception, TimeoutError):
+            return request

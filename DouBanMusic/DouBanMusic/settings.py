@@ -27,7 +27,7 @@ CONCURRENT_REQUESTS = 4
 # Configure a delay for requests for the same website (default: 0)
 # See https://doc.scrapy.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-DOWNLOAD_DELAY = random.randint(4,6)
+DOWNLOAD_DELAY = 3
 # The download delay setting will honor only one of:
 # CONCURRENT_REQUESTS_PER_DOMAIN = 16
 # CONCURRENT_REQUESTS_PER_IP = 16
@@ -65,6 +65,7 @@ DOWNLOADER_MIDDLEWARES = {
 }
 
 RETRY_HTTP_CODES=[500,502,503,504,522,524,408,302,403,404]
+#404
 
 # Enable or disable extensions
 # See https://doc.scrapy.org/en/latest/topics/extensions.html
@@ -105,7 +106,7 @@ MYSQL_HOST = '127.0.0.1'
 MYSQL_PORT = 3306
 MYSQL_DB = 'DouBanMusic'
 MYSQL_USER = 'root'
-MYSQL_PASSWD = 'Lyq963852'
+MYSQL_PASSWD = 'lyq963852'
 MYSQL_CHARSET = 'utf8mb4'
 
 # User-agent list
@@ -148,7 +149,7 @@ USER_AGENTS_LIST = [
 
 ###
 RETRY_TIMES = 5
-DOWNLOAD_TIMEOUT = 10
+DOWNLOAD_TIMEOUT = 30
 
 ### AbuYun
 PROXYHOST = 'http-dyn.abuyun.com'
